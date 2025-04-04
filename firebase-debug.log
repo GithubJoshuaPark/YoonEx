@@ -1,14 +1,13 @@
-[debug] [2025-04-04T12:49:05.905Z] ----------------------------------------------------------------------
-[debug] [2025-04-04T12:49:05.910Z] Command:       /usr/local/bin/node /usr/local/bin/firebase init
-[debug] [2025-04-04T12:49:05.910Z] CLI Version:   11.10.0
-[debug] [2025-04-04T12:49:05.911Z] Platform:      darwin
-[debug] [2025-04-04T12:49:05.911Z] Node Version:  v22.12.0
-[debug] [2025-04-04T12:49:05.912Z] Time:          Fri Apr 04 2025 21:49:05 GMT+0900 (Korean Standard Time)
-[debug] [2025-04-04T12:49:05.912Z] ----------------------------------------------------------------------
+[debug] [2025-04-04T12:51:45.212Z] ----------------------------------------------------------------------
+[debug] [2025-04-04T12:51:45.216Z] Command:       /usr/local/bin/node /usr/local/bin/firebase init
+[debug] [2025-04-04T12:51:45.217Z] CLI Version:   11.10.0
+[debug] [2025-04-04T12:51:45.217Z] Platform:      darwin
+[debug] [2025-04-04T12:51:45.218Z] Node Version:  v22.12.0
+[debug] [2025-04-04T12:51:45.218Z] Time:          Fri Apr 04 2025 21:51:45 GMT+0900 (Korean Standard Time)
+[debug] [2025-04-04T12:51:45.218Z] ----------------------------------------------------------------------
 [debug] 
-[debug] [2025-04-04T12:49:05.915Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
-[debug] [2025-04-04T12:49:06.007Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
-[debug] [2025-04-04T12:49:06.007Z] > authorizing via signed-in user (soromiso@gmail.com)
+[debug] [2025-04-04T12:51:45.230Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-04-04T12:51:45.230Z] > authorizing via signed-in user (soromiso@gmail.com)
 [info] 
      ######## #### ########  ######## ########     ###     ######  ########
      ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
@@ -20,23 +19,3 @@ You're about to initialize a Firebase project in this directory:
 
   /Users/soromiso/Desktop/macDeskTop/GitHubForSoro/jsEx/YoonEx
 
-[debug] [2025-04-04T12:49:06.496Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
-[debug] [2025-04-04T12:49:06.497Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
-[info] 
-=== Project Setup
-[info] 
-[info] First, let's associate this project directory with a Firebase project.
-[info] You can create multiple project aliases by running firebase use --add, 
-[info] but for now we'll just set up a default project.
-[info] 
-[debug] [2025-04-04T12:49:24.369Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=100
-[debug] [2025-04-04T12:49:25.204Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
-[debug] [2025-04-04T12:49:25.205Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
-[info] i  Using project yoonex-e3cdf (YoonEx) 
-[info] 
-=== Hosting Setup
-[info] 
-[info] Your public directory is the folder (relative to your project directory) that
-[info] will contain Hosting assets to be uploaded with firebase deploy. If you
-[info] have a build process for your assets, use your build's output directory.
-[info] 
