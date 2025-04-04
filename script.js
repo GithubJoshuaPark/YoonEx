@@ -140,50 +140,184 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(card);
     });
     
-    // 검색 기능 추가
-    const searchInput = document.createElement('input');
-    searchInput.type = 'text';
-    searchInput.placeholder = '죄목 검색...';
-    searchInput.classList.add('search-input');
+    // 검색 기능 추가 (셀렉트 옵션 사용)
+    const searchSelect = document.createElement('select');
+    searchSelect.classList.add('search-input');
+    
+    // 기본 옵션 추가
+    const defaultOption = document.createElement('option');
+    defaultOption.value = 'overview';
+    defaultOption.textContent = '죄목 검색...';
+    searchSelect.appendChild(defaultOption);
+    
+    // 모든 죄목 카드에서 제목을 가져와 옵션으로 추가
+    const allChargeCards = document.querySelectorAll('.charge-card');
+    const chargeTitles = new Set();
+    
+    allChargeCards.forEach(card => {
+        const title = card.querySelector('h3').textContent;
+        chargeTitles.add(title);
+    });
+    
+    // 알파벳 순으로 정렬하여 옵션 추가
+    [...chargeTitles].sort().forEach(title => {
+        const option = document.createElement('option');
+        option.value = title; // 대소문자 구분 없이 정확한 원본 제목 사용
+        option.textContent = title;
+        searchSelect.appendChild(option);
+    });
     
     const searchContainer = document.createElement('div');
     searchContainer.classList.add('search-container');
-    searchContainer.appendChild(searchInput);
+    searchContainer.appendChild(searchSelect);
     
     const navContainer = document.querySelector('nav .container');
     navContainer.appendChild(searchContainer);
     
     // 검색 기능 구현
-    searchInput.addEventListener('input', function() {
-        const searchTerm = this.value.toLowerCase();
-        const chargeCards = document.querySelectorAll('.charge-card');
+    searchSelect.addEventListener('change', function() {
+        const selectedValue = this.value;
+        const searchTerm = selectedValue.toLowerCase();
+        const filteredChargeCards = document.querySelectorAll('.charge-card');
+        let firstMatchedCard = null;
         
-        chargeCards.forEach(card => {
-            const title = card.querySelector('h3').textContent.toLowerCase();
-            const content = card.querySelector('.charge-body').textContent.toLowerCase();
-            
-            if (title.includes(searchTerm) || content.includes(searchTerm)) {
-                card.style.display = 'block';
-                // 검색어 하이라이트 (간단한 구현)
-                if (searchTerm.length > 0) {
-                    card.style.boxShadow = '0 0 0 2px var(--secondary-color)';
-                } else {
-                    card.style.boxShadow = 'none';
-                }
-            } else {
-                card.style.display = 'none';
-            }
+        console.log('Selected value:', selectedValue); // 디버그용 로그
+        
+        // 먼저 모든 카드와 섹션을 표시
+        filteredChargeCards.forEach(card => {
+            card.style.display = 'block';
+            card.style.boxShadow = 'none';
         });
         
-        // 검색 결과가 없는 섹션 숨기기
         sections.forEach(section => {
-            const visibleCards = section.querySelectorAll('.charge-card[style="display: block"]');
-            if (visibleCards.length === 0 && searchTerm.length > 0) {
-                section.style.display = 'none';
-            } else {
-                section.style.display = 'block';
-            }
+            section.style.display = 'block';
         });
+        
+        // 기본 옵션이 아닌 경우에만 필터링 적용
+        if (searchTerm !== 'overview' && searchTerm.length > 0) {
+            filteredChargeCards.forEach(card => {
+                const cardTitle = card.querySelector('h3').textContent;
+                const cardTitleLower = cardTitle.toLowerCase();
+                const content = card.querySelector('.charge-body').textContent.toLowerCase();
+                
+                // 정확한 제목 일치 확인 (선택한 옵션과 카드 제목이 정확히 일치하는지)
+                const exactTitleMatch = (cardTitle === selectedValue);
+                const looseMatch = cardTitleLower.includes(searchTerm) || content.includes(searchTerm);
+                
+                if (exactTitleMatch || looseMatch) {
+                    card.style.display = 'block';
+                    card.style.boxShadow = '0 0 0 2px var(--secondary-color)';
+                    
+                    // 정확한 일치가 있으면 그것을 우선 선택
+                    if (exactTitleMatch && !firstMatchedCard) {
+                        firstMatchedCard = card;
+                        console.log('Exact match found:', cardTitle);
+                    }
+                    // 그렇지 않으면 첫 번째 일치하는 카드 저장
+                    else if (!firstMatchedCard && looseMatch) {
+                        firstMatchedCard = card;
+                        console.log('Loose match found:', cardTitle);
+                    }
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // 검색 결과가 없는 섹션 숨기기
+            sections.forEach(section => {
+                const visibleCards = section.querySelectorAll('.charge-card[style="display: block"]');
+                if (visibleCards.length === 0) {
+                    section.style.display = 'none';
+                } else {
+                    section.style.display = 'block';
+                }
+            });
+        }
+        
+        console.log('First matched card:', firstMatchedCard); // 디버그용 로그
+        
+        // 선택된 항목으로 스크롤
+        if (searchTerm === 'overview') {
+            // 기본 옵션(죄목 검색...) 선택 시 개요 섹션으로 이동
+            const overviewSection = document.getElementById('overview');
+            if (overviewSection) {
+                console.log('Scrolling to overview section');
+                window.scrollTo({
+                    top: overviewSection.offsetTop - 70,
+                    behavior: 'smooth'
+                });
+                
+                // 네비게이션 활성화 업데이트
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').substring(1) === 'overview') {
+                        link.classList.add('active');
+                    }
+                });
+                
+                // 모든 카드 표시 및 섹션 표시
+                filteredChargeCards.forEach(card => {
+                    card.style.display = 'block';
+                    card.style.boxShadow = 'none';
+                });
+                
+                sections.forEach(section => {
+                    section.style.display = 'block';
+                });
+            }
+        } else if (firstMatchedCard && searchTerm.length > 0) {
+            // 카드가 속한 섹션 찾기
+            const parentSection = firstMatchedCard.closest('section');
+            if (parentSection) {
+                console.log('Scrolling to card:', firstMatchedCard);
+                console.log('Card position:', firstMatchedCard.offsetTop);
+                
+                // 부드럽게 스크롤
+                setTimeout(() => {
+                    // 카드가 속한 섹션을 먼저 확인하고 해당 섹션이 보이는지 확인
+                    const parentSectionDisplay = window.getComputedStyle(parentSection).display;
+                    console.log('Parent section display:', parentSectionDisplay);
+                    
+                    // 섹션이 보이지 않으면 보이게 설정
+                    if (parentSectionDisplay === 'none') {
+                        parentSection.style.display = 'block';
+                    }
+                    
+                    // 카드가 보이는지 확인
+                    const cardDisplay = window.getComputedStyle(firstMatchedCard).display;
+                    console.log('Card display:', cardDisplay);
+                    
+                    // 카드가 보이지 않으면 보이게 설정
+                    if (cardDisplay === 'none') {
+                        firstMatchedCard.style.display = 'block';
+                    }
+                    
+                    // 스크롤 위치 계산
+                    const scrollPosition = firstMatchedCard.getBoundingClientRect().top + window.pageYOffset - 100;
+                    console.log('Scroll position:', scrollPosition);
+                    
+                    window.scrollTo({
+                        top: scrollPosition,
+                        behavior: 'smooth'
+                    });
+                }, 200); // 지연 시간 증가
+                
+                // 네비게이션 활성화 업데이트
+                const sectionId = parentSection.getAttribute('id');
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').substring(1) === sectionId) {
+                        link.classList.add('active');
+                    }
+                });
+                
+                // 선택된 항목 강조 효과 추가
+                firstMatchedCard.style.animation = 'highlight-pulse 1s ease';
+                setTimeout(() => {
+                    firstMatchedCard.style.animation = '';
+                }, 1000);
+            }
+        }
     });
     
     // 맨 위로 스크롤 버튼 추가
